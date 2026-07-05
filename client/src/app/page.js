@@ -42,11 +42,16 @@ export default function Home() {
     [setRecentSearches]
   );
 
+  /** Clear both error sources */
+  const clearAllErrors = useCallback(() => {
+    clearError();
+    setGeoError(null);
+  }, [clearError]);
+
   /** Search by city name string */
   const handleSearch = useCallback(
     async (city) => {
-      clearError();
-      setGeoError(null);
+      clearAllErrors();
       try {
         const loc = await geocodeCity(city);
         await fetchWeather(loc.lat, loc.lon, loc.city, loc.country);
@@ -57,7 +62,7 @@ export default function Home() {
         setGeoError(err.message || `Could not find "${city}"`);
       }
     },
-    [clearError, fetchWeather, addRecentSearch]
+    [clearAllErrors, fetchWeather, addRecentSearch]
   );
 
   /** Use browser geolocation */
@@ -66,8 +71,7 @@ export default function Home() {
       setGeoError('Geolocation is not supported by your browser.');
       return;
     }
-    clearError();
-    setGeoError(null);
+    clearAllErrors();
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
@@ -90,9 +94,10 @@ export default function Home() {
       },
       { timeout: 10_000 }
     );
-  }, [clearError, fetchWeather, addRecentSearch]);
+  }, [clearAllErrors, fetchWeather, addRecentSearch]);
 
-  const displayError = error || geoError;
+  // Merge hook error (weather fetch failures) and local geoError (geocoding / geolocation failures)
+  const displayError = geoError || error;
 
   return (
     <div
@@ -116,7 +121,7 @@ export default function Home() {
           <RecentSearches searches={recentSearches} onSelect={handleSearch} />
 
           {/* ── Main content area ──────────────────────────────────── */}
-          <main>
+          <main aria-label="Weather information">
             {loading && <LoadingSpinner />}
 
             {!loading && displayError && (
@@ -124,7 +129,10 @@ export default function Home() {
                 message={displayError}
                 onRetry={
                   weather
-                    ? () => fetchWeather(weather.lat, weather.lon, weather.city, weather.country)
+                    ? () => {
+                        clearAllErrors();
+                        fetchWeather(weather.lat, weather.lon, weather.city, weather.country);
+                      }
                     : undefined
                 }
               />
@@ -143,9 +151,9 @@ export default function Home() {
             )}
 
             {!loading && !displayError && !weather && (
-              <div className="text-center text-white/60 py-16 text-base">
+              <p className="text-center text-white/60 py-16 text-base" aria-live="polite">
                 Search for a city or use 📍 to get started.
-              </div>
+              </p>
             )}
           </main>
 
