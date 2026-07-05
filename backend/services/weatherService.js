@@ -43,7 +43,7 @@ async function fetchForecast(lat, lon) {
   url.searchParams.set('longitude', lon);
   url.searchParams.set(
     'current',
-    'temperature_2m,apparent_temperature,weathercode,windspeed_10m,relativehumidity_2m,surface_pressure,visibility_10m'
+    'temperature_2m,apparent_temperature,weathercode,windspeed_10m,relativehumidity_2m,surface_pressure'
   );
   url.searchParams.set(
     'daily',

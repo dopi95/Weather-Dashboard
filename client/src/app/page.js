@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useWeather } from '../hooks/useWeather';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { geocodeCity, reverseGeocode } from '../services/api';
@@ -23,10 +23,21 @@ export default function Home() {
   const [recentSearches, setRecentSearches] = useLocalStorage('recentSearches', []);
   const [geoError, setGeoError] = useState(null);
 
-  // Derive current theme from weather data
+  // Use null on the server/first render so SSR and client agree, then set the
+  // real hour after mount to avoid a hydration mismatch from Date().getHours().
+  const [clientHour, setClientHour] = useState(null);
+  useEffect(() => {
+    setClientHour(new Date().getHours());
+  }, []);
+
+  // Derive current theme from weather data.
+  // Open-Meteo returns `current.time` as a local time string like "2026-07-05T14:00"
+  // WITHOUT a timezone offset. Parsing it with `new Date()` would treat it as UTC,
+  // giving the wrong hour when the city's timezone differs from the browser's.
+  // Parse the hour directly from the "HH" part of the ISO string instead.
   const hour = weather
-    ? new Date(weather.datetime).getHours()
-    : new Date().getHours();
+    ? parseInt(weather.datetime.slice(11, 13), 10)
+    : (clientHour ?? 12); // 12 = neutral daytime default before mount
   const themeClass = getWeatherTheme(weather?.weatherCode ?? null, hour);
 
   /** Push a city name into the recent searches list (max MAX_RECENT, deduplicated) */
