@@ -28,6 +28,18 @@ async function geocodeCity(name) {
  * @param {number} lon
  * @returns {Promise<Object>} Raw Open-Meteo response
  */
+async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+  for (let i = 0; i < retries; i++) {
+    const res = await fetch(url, options);
+    if (res.status === 429 && i < retries - 1) {
+      await new Promise((r) => setTimeout(r, delay * 2 ** i));
+      continue;
+    }
+    if (!res.ok) throw new Error(`Open-Meteo Forecast API error: ${res.status}`);
+    return res.json();
+  }
+}
+
 async function fetchForecast(lat, lon) {
   const url = new URL(FORECAST_URL);
   url.searchParams.set('latitude', lat);
@@ -43,11 +55,7 @@ async function fetchForecast(lat, lon) {
   url.searchParams.set('forecast_days', '6');
   url.searchParams.set('timezone', 'auto');
 
-  const res = await fetch(url.toString());
-  if (!res.ok) {
-    throw new Error(`Open-Meteo Forecast API error: ${res.status}`);
-  }
-  return res.json();
+  return fetchWithRetry(url.toString());
 }
 
 /**
