@@ -1,9 +1,3 @@
-/**
- * routes/location.js
- * GET /api/location?q=<city>          — geocode city name → lat/lon
- * GET /api/location/reverse?lat=&lon= — reverse geocode lat/lon → city name
- */
-
 const express = require('express');
 const { geocodeCity, reverseGeocode } = require('../services/weatherService');
 

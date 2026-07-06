@@ -1,12 +1,3 @@
-/**
- * routes/weather.js
- * GET /api/weather?lat=<lat>&lon=<lon>
- *
- * Returns current weather conditions for the given coordinates.
- * Expects the city/country to be passed as query params (set by the
- * location route before being forwarded by the frontend).
- */
-
 const express = require('express');
 const { fetchForecast } = require('../services/weatherService');
 

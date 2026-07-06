@@ -1,12 +1,3 @@
-/**
- * weatherService.js
- * All outbound fetch calls to Open-Meteo and Nominatim.
- * Uses native fetch (Node 18+) — no additional HTTP library needed.
- *
- * All functions throw descriptive Errors on upstream failures so the
- * Express routes can forward them to the global error handler.
- */
-
 const GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search';
 const FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/reverse';

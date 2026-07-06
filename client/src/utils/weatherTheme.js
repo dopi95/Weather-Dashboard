@@ -1,10 +1,3 @@
-/**
- * weatherTheme.js
- * Pure function: WMO weatherCode + current hour → Tailwind gradient class string.
- *
- * Each condition has a daytime gradient and a darker nighttime variant.
- * Night is defined as 18:00–05:59 (local time of the searched city).
- */
 
 /**
  * Return a Tailwind gradient class based on WMO weather code and hour of day.

@@ -1,9 +1,3 @@
-/**
- * routes/forecast.js
- * GET /api/forecast?lat=<lat>&lon=<lon>
- *
- * Returns a 5-day daily forecast (days 1–5 from Open-Meteo; day 0 is today).
- */
 
 const express = require('express');
 const { fetchForecast } = require('../services/weatherService');

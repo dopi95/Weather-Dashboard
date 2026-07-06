@@ -1,9 +1,3 @@
-/**
- * useWeather.js
- * Fetches current weather and 5-day forecast from the Express backend.
- * Manages loading, error, and data state.
- */
-
 'use client';
 
 import { useState, useCallback } from 'react';

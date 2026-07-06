@@ -1,12 +1,3 @@
-/**
- * useLocalStorage.js
- * Generic hook for reading and writing a JSON-serialised value in localStorage.
- * Falls back gracefully when localStorage is unavailable (e.g. SSR).
- *
- * Hydration-safe: always starts with `initial` on the first render so the
- * server and client produce the same HTML. After mount, the value is
- * synchronised from localStorage via useEffect.
- */
 
 'use client';
 

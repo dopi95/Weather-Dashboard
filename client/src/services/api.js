@@ -1,7 +1,3 @@
-/**
- * api.js — Thin fetch wrappers for the Express backend.
- * All paths are relative so Next.js rewrites (next.config.mjs) proxy them.
- */
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5000';
 
