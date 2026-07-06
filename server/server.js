@@ -15,22 +15,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware 
 
-const allowedOrigins = process.env.CLIENT_ORIGIN
-  ? process.env.CLIENT_ORIGIN.split(',')
-  : ['http://localhost:3000'];
-
-app.use(
-  cors({
-    origin: (origin, cb) => {
-      if (!origin || allowedOrigins.some((o) => origin.startsWith(o.trim()))) {
-        cb(null, true);
-      } else {
-        cb(new Error(`CORS: origin ${origin} not allowed`));
-      }
-    },
-    methods: ['GET'],
-  })
-);
+app.use(cors({ origin: '*', methods: ['GET'] }));
 
 app.use(express.json());
 
