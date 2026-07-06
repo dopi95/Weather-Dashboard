@@ -2,6 +2,9 @@ const GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search';
 const FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/reverse';
 
+const cache = new Map();
+const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
+
 /**
  * Geocode a city name to lat/lon results.
  * @param {string} name - City name to search
@@ -41,6 +44,10 @@ async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
 }
 
 async function fetchForecast(lat, lon) {
+  const key = `${parseFloat(lat).toFixed(2)},${parseFloat(lon).toFixed(2)}`;
+  const cached = cache.get(key);
+  if (cached && Date.now() - cached.ts < CACHE_TTL) return cached.data;
+
   const url = new URL(FORECAST_URL);
   url.searchParams.set('latitude', lat);
   url.searchParams.set('longitude', lon);
@@ -55,7 +62,9 @@ async function fetchForecast(lat, lon) {
   url.searchParams.set('forecast_days', '6');
   url.searchParams.set('timezone', 'auto');
 
-  return fetchWithRetry(url.toString());
+  const data = await fetchWithRetry(url.toString());
+  cache.set(key, { data, ts: Date.now() });
+  return data;
 }
 
 /**
