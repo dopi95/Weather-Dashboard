@@ -41,7 +41,7 @@ export default function ForecastCard({ day, unit }) {
           <span className="text-orange-300">{max}{unitLabel}</span>
         </div>
         <div className="h-1 w-full rounded-full bg-white/10 overflow-hidden">
-          <div className="h-full rounded-full bg-gradient-to-r from-blue-400 to-orange-400" style={{ width: '100%' }} />
+          <div className="h-full rounded-full bg-linear-to-r from-blue-400 to-orange-400" style={{ width: '100%' }} />
         </div>
       </div>
     </div>

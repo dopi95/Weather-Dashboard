@@ -24,7 +24,7 @@ export default function LoadingSpinner() {
         <div className="skeleton h-4 w-28 rounded-lg mb-4" />
         <div className="flex gap-2.5">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="skeleton flex-1 min-w-[88px] h-36 rounded-2xl" />
+            <div key={i} className="skeleton flex-1 min-w-22 h-36 rounded-2xl" />
           ))}
         </div>
       </div>
