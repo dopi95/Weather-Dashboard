@@ -31,16 +31,20 @@ async function geocodeCity(name) {
  * @param {number} lon
  * @returns {Promise<Object>} Raw Open-Meteo response
  */
-async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+async function fetchWithRetry(url, options = {}, retries = 4, delay = 2000) {
+  const opts = { ...options, headers: { 'User-Agent': 'WeatherDashboard/1.0 (elyasyenealem@gmail.com)', ...options.headers } };
   for (let i = 0; i < retries; i++) {
-    const res = await fetch(url, options);
+    const res = await fetch(url, opts);
     if (res.status === 429 && i < retries - 1) {
-      await new Promise((r) => setTimeout(r, delay * 2 ** i));
+      const retryAfter = res.headers.get('Retry-After');
+      const wait = retryAfter ? parseInt(retryAfter) * 1000 : delay * 2 ** i;
+      await new Promise((r) => setTimeout(r, wait));
       continue;
     }
     if (!res.ok) throw new Error(`Open-Meteo Forecast API error: ${res.status}`);
     return res.json();
   }
+  throw new Error('Open-Meteo Forecast API error: 429');
 }
 
 async function fetchForecast(lat, lon) {
