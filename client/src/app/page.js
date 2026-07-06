@@ -6,6 +6,7 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 import { geocodeCity, reverseGeocode } from '../services/api';
 import { getWeatherInfo, getNightBg } from '../components/WeatherIcon';
 
+import { MapPin } from 'lucide-react';
 import SearchBar from '../components/SearchBar';
 import WeatherCard from '../components/WeatherCard';
 import ForecastGrid from '../components/ForecastGrid';
@@ -158,7 +159,7 @@ export default function Home() {
                 </div>
                 <div>
                   <p className="text-white font-semibold text-lg">Search any city</p>
-                  <p className="text-white/50 text-sm mt-1">or tap 📍 to use your current location</p>
+                  <p className="text-white/50 text-sm mt-1 flex items-center justify-center gap-1.5">or tap <MapPin size={13} className="text-white/50 inline" strokeWidth={2} /> to use your current location</p>
                 </div>
               </div>
             )}
