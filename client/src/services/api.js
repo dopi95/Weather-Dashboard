@@ -1,5 +1,5 @@
 
-const BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5000';
+const BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 /**
  * Shared fetch helper — throws a descriptive Error on non-2xx responses.
