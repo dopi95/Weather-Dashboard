@@ -1,32 +1,25 @@
-/**
- * RecentSearches.jsx
- * Chip list of the last 5 successful city searches from localStorage.
- */
+import { Clock } from 'lucide-react';
 
-/**
- * @param {{
- *   searches: string[],
- *   onSelect: (city: string) => void,
- * }} props
- */
 export default function RecentSearches({ searches, onSelect }) {
   if (!searches || searches.length === 0) return null;
 
   return (
     <nav aria-label="Recent searches">
-      <p className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-2">
-        Recent
-      </p>
+      <div className="flex items-center gap-1.5 mb-2.5">
+        <Clock size={11} className="text-white/40" strokeWidth={2} />
+        <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Recent</p>
+      </div>
       <div className="flex flex-wrap gap-2">
         {searches.map((city) => (
           <button
             key={city}
             onClick={() => onSelect(city)}
             className="
-              px-3 py-1 rounded-full text-sm
-              bg-white/20 hover:bg-white/35 text-white
-              focus:outline-none focus:ring-2 focus:ring-white/60
-              transition
+              px-3.5 py-1.5 rounded-full text-xs font-semibold
+              glass hover:bg-white/20 border border-white/20
+              text-white/75 hover:text-white
+              focus:outline-none focus:ring-2 focus:ring-blue-400/60
+              shadow-sm transition-all duration-200
             "
             aria-label={`Search for ${city} again`}
           >

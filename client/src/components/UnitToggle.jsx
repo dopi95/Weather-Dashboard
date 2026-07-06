@@ -1,28 +1,28 @@
-/**
- * UnitToggle.jsx
- * Toggle between °C and °F. Conversion is pure frontend math — no re-fetch.
- */
-
-/**
- * @param {{
- *   unit: 'C'|'F',
- *   onToggle: () => void,
- * }} props
- */
 export default function UnitToggle({ unit, onToggle }) {
   return (
     <button
       onClick={onToggle}
       aria-label={`Switch to ${unit === 'C' ? 'Fahrenheit' : 'Celsius'}`}
-      title={`Switch to °${unit === 'C' ? 'F' : 'C'}`}
       className="
-        px-3 py-1.5 rounded-xl text-sm font-semibold
-        bg-white/20 hover:bg-white/35 text-white
-        focus:outline-none focus:ring-2 focus:ring-white/60
-        transition select-none
+        relative flex items-center glass-light rounded-full p-1 shadow-md
+        focus:outline-none focus:ring-2 focus:ring-blue-400/60
+        transition select-none shrink-0
       "
     >
-      {unit === 'C' ? '°C → °F' : '°F → °C'}
+      {['C', 'F'].map((u) => (
+        <span
+          key={u}
+          className={`
+            px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-250
+            ${unit === u
+              ? 'bg-blue-500 text-white shadow-md'
+              : 'text-slate-500 hover:text-slate-700'
+            }
+          `}
+        >
+          °{u}
+        </span>
+      ))}
     </button>
   );
 }

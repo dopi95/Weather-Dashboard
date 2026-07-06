@@ -1,20 +1,8 @@
-/**
- * SearchBar.jsx
- * Text input + Search button + Geolocation button.
- * Full-width on mobile, constrained on larger screens.
- */
-
 'use client';
 
 import { useState } from 'react';
+import { Search, MapPin, Loader2 } from 'lucide-react';
 
-/**
- * @param {{
- *   onSearch: (city: string) => void,
- *   onGeolocate: () => void,
- *   loading: boolean,
- * }} props
- */
 export default function SearchBar({ onSearch, onGeolocate, loading }) {
   const [value, setValue] = useState('');
 
@@ -25,49 +13,53 @@ export default function SearchBar({ onSearch, onGeolocate, loading }) {
     onSearch(trimmed);
   }
 
-  function handleKeyDown(e) {
-    if (e.key === 'Enter') handleSubmit(e);
-  }
-
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex w-full gap-2"
-      role="search"
-      aria-label="Search for a city"
-    >
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder="Search city…"
-        aria-label="City name"
-        disabled={loading}
-        className="
-          flex-1 min-w-0 px-4 py-2 rounded-xl border border-white/30
-          bg-white/20 backdrop-blur-sm text-white placeholder-white/60
-          focus:outline-none focus:ring-2 focus:ring-white/60
-          disabled:opacity-50 disabled:cursor-not-allowed
-          transition
-        "
-      />
+    <form onSubmit={handleSubmit} className="flex gap-2 w-full" role="search" aria-label="Search for a city">
+      {/* Input wrapper */}
+      <div className="relative flex-1 min-w-0 glow-focus rounded-2xl">
+        <Search
+          size={16}
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+          strokeWidth={2}
+        />
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          placeholder="Search for a city..."
+          aria-label="City name"
+          disabled={loading}
+          className="
+            w-full pl-10 pr-4 py-3.5 rounded-2xl text-sm
+            glass-light border-0
+            text-slate-800 placeholder-slate-400
+            focus:outline-none focus:bg-white
+            disabled:opacity-50 disabled:cursor-not-allowed
+            shadow-md transition-all duration-200
+          "
+        />
+      </div>
 
+      {/* Search button */}
       <button
         type="submit"
         disabled={loading || !value.trim()}
         aria-label="Search"
         className="
-          px-5 py-2 rounded-xl font-semibold
-          bg-white/25 hover:bg-white/40 text-white
+          px-5 py-3.5 rounded-2xl text-sm font-semibold
+          bg-blue-500 hover:bg-blue-400 active:bg-blue-600 text-white shadow-lg
           disabled:opacity-40 disabled:cursor-not-allowed
-          focus:outline-none focus:ring-2 focus:ring-white/60
-          transition
+          focus:outline-none focus:ring-2 focus:ring-blue-400
+          transition-all duration-200 flex items-center gap-2 shrink-0
         "
       >
-        {loading ? '…' : 'Search'}
+        {loading
+          ? <Loader2 size={16} className="animate-spin" />
+          : <><Search size={15} strokeWidth={2} /><span className="hidden sm:inline">Search</span></>
+        }
       </button>
 
+      {/* Geo button */}
       <button
         type="button"
         onClick={onGeolocate}
@@ -75,14 +67,14 @@ export default function SearchBar({ onSearch, onGeolocate, loading }) {
         aria-label="Use my current location"
         title="Use my current location"
         className="
-          px-3 py-2 rounded-xl text-xl
-          bg-white/25 hover:bg-white/40 text-white
+          px-4 py-3.5 rounded-2xl
+          glass-light hover:bg-white border-0 text-slate-500 hover:text-blue-500
           disabled:opacity-40 disabled:cursor-not-allowed
-          focus:outline-none focus:ring-2 focus:ring-white/60
-          transition
+          focus:outline-none focus:ring-2 focus:ring-blue-400/60
+          shadow-md transition-all duration-200 shrink-0
         "
       >
-        📍
+        <MapPin size={16} strokeWidth={2} />
       </button>
     </form>
   );
