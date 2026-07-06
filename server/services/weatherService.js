@@ -1,5 +1,6 @@
 const GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search';
 const FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
+const FORECAST_URL_FALLBACK = 'https://previous-api.open-meteo.com/v1/forecast';
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/reverse';
 
 const cache = new Map();
@@ -52,21 +53,24 @@ async function fetchForecast(lat, lon) {
   const cached = cache.get(key);
   if (cached && Date.now() - cached.ts < CACHE_TTL) return cached.data;
 
-  const url = new URL(FORECAST_URL);
-  url.searchParams.set('latitude', lat);
-  url.searchParams.set('longitude', lon);
-  url.searchParams.set(
-    'current',
-    'temperature_2m,apparent_temperature,weathercode,windspeed_10m,relativehumidity_2m,surface_pressure'
-  );
-  url.searchParams.set(
-    'daily',
-    'weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum'
-  );
-  url.searchParams.set('forecast_days', '6');
-  url.searchParams.set('timezone', 'auto');
+  const buildUrl = (base) => {
+    const url = new URL(base);
+    url.searchParams.set('latitude', lat);
+    url.searchParams.set('longitude', lon);
+    url.searchParams.set('current', 'temperature_2m,apparent_temperature,weathercode,windspeed_10m,relativehumidity_2m,surface_pressure');
+    url.searchParams.set('daily', 'weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum');
+    url.searchParams.set('forecast_days', '6');
+    url.searchParams.set('timezone', 'auto');
+    return url.toString();
+  };
 
-  const data = await fetchWithRetry(url.toString());
+  let data;
+  try {
+    data = await fetchWithRetry(buildUrl(FORECAST_URL));
+  } catch {
+    data = await fetchWithRetry(buildUrl(FORECAST_URL_FALLBACK));
+  }
+
   cache.set(key, { data, ts: Date.now() });
   return data;
 }
